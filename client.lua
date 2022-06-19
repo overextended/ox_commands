@@ -49,20 +49,29 @@ registerCommand('tpm', function()
 	local marker = GetFirstBlipInfoId(8)
 
     if marker ~= 0 then
-        DoScreenFadeOut(250)
-        Wait(250)
-
         local coords = GetBlipInfoIdCoord(marker)
+
+        DoScreenFadeOut(100)
+        Wait(100)
+
         local vehicle = cache.seat == -1 and cache.vehicle
         lastCoords = GetEntityCoords(cache.ped)
 
         freezePlayer(true, vehicle)
 
-        local z = 30.0
+        local z, inc, int = 0.0, 20.0, 0
 
-        while z < 900.0 do
+        while z < 800.0 do
             Wait(0)
             local found, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, z, false)
+
+            if int == 0 then
+                int = GetInteriorAtCoords(coords.x, coords.y, z)
+
+                if int ~= 0 then
+                    inc = 2.0
+                end
+            end
 
             if found then
                 teleport(vehicle, coords.x, coords.y, groundZ)
@@ -70,10 +79,11 @@ registerCommand('tpm', function()
             end
 
             teleport(vehicle, coords.x, coords.y, z)
-            z += 30.0
+            z += inc
         end
 
         freezePlayer(false, vehicle)
+        SetGameplayCamRelativeHeading(0)
         DoScreenFadeIn(750)
     end
 end)
