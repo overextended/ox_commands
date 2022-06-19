@@ -15,6 +15,15 @@ repository   'https://github.com/overextended/ox_commands'
 --[[ Manifest ]]--
 shared_script '@ox_lib/init.lua'
 server_script 'server.lua'
+
+client_scripts {
+    '@monitor/scripts/menu/vendor/freecam/utils.lua',
+    '@monitor/scripts/menu/vendor/freecam/config.lua',
+    '@monitor/scripts/menu/vendor/freecam/main.lua',
+    '@monitor/scripts/menu/vendor/freecam/camera.lua',
+	'client/main.lua',
+}
+
 client_script 'client.lua'
 
 files {
