@@ -7,7 +7,6 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_commands'
 version      '0.0.0'
-description  'What have I done?'
 license      'GPL-3.0-or-later'
 author       'overextended'
 repository   'https://github.com/overextended/ox_commands'
@@ -17,10 +16,10 @@ shared_script '@ox_lib/init.lua'
 server_script 'server.lua'
 
 client_scripts {
-    '@monitor/scripts/menu/vendor/freecam/utils.lua',
-    '@monitor/scripts/menu/vendor/freecam/config.lua',
-    '@monitor/scripts/menu/vendor/freecam/main.lua',
-    '@monitor/scripts/menu/vendor/freecam/camera.lua',
+    'vendor/freecam/utils.lua',
+    'vendor/freecam/config.lua',
+    'vendor/freecam/main.lua',
+    'vendor/freecam/camera.lua',
 	'client/main.lua',
 }
 
