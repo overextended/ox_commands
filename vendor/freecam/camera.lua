@@ -3,8 +3,8 @@ local vector3 = vector3
 local SetCamRot = SetCamRot
 local IsCamActive = IsCamActive
 local SetCamCoord = SetCamCoord
-local LoadInterior = LoadInterior
-local SetFocusArea = SetFocusArea
+local PinInteriorInMemory = PinInteriorInMemory
+local SetFocusPosAndVel = SetFocusPosAndVel
 local LockMinimapAngle = LockMinimapAngle
 local GetInteriorAtCoords = GetInteriorAtCoords
 local LockMinimapPosition = LockMinimapPosition
@@ -14,14 +14,13 @@ local _internal_isFrozen = false
 
 local _internal_pos = nil
 local _internal_rot = nil
-local _internal_fov = nil
 local _internal_vecX = nil
 local _internal_vecY = nil
 local _internal_vecZ = nil
 
 --------------------------------------------------------------------------------
 
-function GetInitialCameraPosition()
+local function GetInitialCameraPosition()
   if _G.CAMERA_SETTINGS.KEEP_POSITION and _internal_pos then
     return _internal_pos
   end
@@ -29,7 +28,7 @@ function GetInitialCameraPosition()
   return GetGameplayCamCoord()
 end
 
-function GetInitialCameraRotation()
+local function GetInitialCameraRotation()
   if _G.CAMERA_SETTINGS.KEEP_ROTATION and _internal_rot then
     return _internal_rot
   end
@@ -44,25 +43,22 @@ function IsFreecamFrozen()
   return _internal_isFrozen
 end
 
-function SetFreecamFrozen(frozen)
-  local frozen = frozen == true
-  _internal_isFrozen = frozen
-end
-
 --------------------------------------------------------------------------------
 
 function GetFreecamPosition()
   return _internal_pos
 end
 
-function SetFreecamPosition(x, y, z)
-  local pos = vector3(x, y, z)
+function SetFreecamPosition(pos)
   local int = GetInteriorAtCoords(pos)
 
-  LoadInterior(int)
-  SetFocusArea(pos)
-  LockMinimapPosition(x, y)
-  SetCamCoord(_internal_camera, pos)
+  if int ~= 0 then
+    PinInteriorInMemory(int)
+  end
+
+  SetFocusPosAndVel(pos.x, pos.y, pos.z)
+  LockMinimapPosition(pos.x, pos.y)
+  SetCamCoord(_internal_camera, pos.x, pos.y, pos.z)
 
   _internal_pos = pos
 end
@@ -73,30 +69,27 @@ function GetFreecamRotation()
   return _internal_rot
 end
 
-function SetFreecamRotation(x, y, z)
-  local rotX, rotY, rotZ = ClampCameraRotation(x, y, z)
-  local vecX, vecY, vecZ = EulerToMatrix(rotX, rotY, rotZ)
-  local rot = vector3(rotX, rotY, rotZ)
+function SetFreecamRotation(rot)
+  rot = vector3(Clamp(rot.x, -90.0, 90.0), rot.y % 360, rot.z % 360)
 
-  LockMinimapAngle(floor(rotZ))
-  SetCamRot(_internal_camera, rot)
+  if _internal_rot ~= rot then
+    local vecX, vecY, vecZ = EulerToMatrix(rot.x, rot.y, rot.z)
 
-  _internal_rot  = rot
-  _internal_vecX = vecX
-  _internal_vecY = vecY
-  _internal_vecZ = vecZ
+    LockMinimapAngle(floor(rot.z))
+    SetCamRot(_internal_camera, rot.x, rot.y, rot.z)
+
+    _internal_rot  = rot
+    _internal_vecX = vecX
+    _internal_vecY = vecY
+    _internal_vecZ = vecZ
+  end
 end
 
 --------------------------------------------------------------------------------
 
-function GetFreecamFov()
-  return _internal_fov
-end
-
-function SetFreecamFov(fov)
-  local fov = Clamp(fov, 0.0, 90.0)
+local function SetFreecamFov(fov)
+  fov = Clamp(fov, 0.0, 90.0)
   SetCamFov(_internal_camera, fov)
-  _internal_fov = fov
 end
 
 --------------------------------------------------------------------------------
@@ -106,11 +99,6 @@ function GetFreecamMatrix()
       _internal_vecY,
       _internal_vecZ,
       _internal_pos
-end
-
-function GetFreecamTarget(distance)
-  local target = _internal_pos + (_internal_vecY * distance)
-  return target
 end
 
 --------------------------------------------------------------------------------
@@ -124,25 +112,34 @@ function SetFreecamActive(active)
     return
   end
 
+  local ped = cache.ped
+
+  SetEntityVisible(ped, not active)
+  SetEntityCollision(ped, not active, not active)
+  SetEntityInvincible(ped, noClip)
+
   local enableEasing = _G.CAMERA_SETTINGS.ENABLE_EASING
   local easingDuration = _G.CAMERA_SETTINGS.EASING_DURATION
 
   if active then
-    local pos = GetInitialCameraPosition()
-    local rot = GetInitialCameraRotation()
+    if cache.vehicle then
+      TaskLeaveVehicle(ped, cache.vehicle, 16)
+    end
 
     _internal_camera = CreateCam('DEFAULT_SCRIPTED_CAMERA', true)
 
     SetFreecamFov(_G.CAMERA_SETTINGS.FOV)
-    SetFreecamPosition(pos.x, pos.y, pos.z)
-    SetFreecamRotation(rot.x, rot.y, rot.z)
+    SetFreecamPosition(GetInitialCameraPosition())
+    SetFreecamRotation(GetInitialCameraRotation())
     TriggerEvent('freecam:onEnter')
+    StartFreecamThread()
   else
     DestroyCam(_internal_camera)
     ClearFocus()
     UnlockMinimapPosition()
     UnlockMinimapAngle()
     TriggerEvent('freecam:onExit')
+    SetGameplayCamRelativeHeading(0)
   end
 
   RenderScriptCams(active, enableEasing, easingDuration, true, true)

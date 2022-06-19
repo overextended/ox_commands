@@ -59,8 +59,12 @@ local function UpdateCamera()
     rot = vector3(rotX, rotY, rotZ)
 
     -- Update camera
-    SetFreecamPosition(pos.x, pos.y, pos.z)
-    SetFreecamRotation(rot.x, rot.y, rot.z)
+
+    if pos ~= GetFreecamPosition() then
+      SetFreecamPosition(pos)
+    end
+
+    SetFreecamRotation(rot)
 
     return pos, rotZ
   end
@@ -74,28 +78,28 @@ end
 function StartFreecamThread()
   -- Camera/Pos updating thread
   Citizen.CreateThread(function()
-    local ped = PlayerPedId()
-    local initialPos = GetEntityCoords(ped)
-    SetFreecamPosition(initialPos[1], initialPos[2], initialPos[3])
+    local ped = cache.ped
+    SetFreecamPosition(GetEntityCoords(ped))
 
     local function updatePos(pos, rotZ)
-      if pos ~= nil and rotZ ~= nil then
-        -- Update ped
-        SetEntityCoords(ped, pos.x, pos.y, pos.z)
-        SetEntityHeading(ped, rotZ)
-        -- Update veh
-        local veh = GetVehiclePedIsIn(ped, false)
-        if veh and veh > 0 then
-          SetEntityCoords(veh, pos.x, pos.y, pos.z)
-        end
+      -- Update ped
+      SetEntityCoords(ped, pos.x, pos.y, pos.z)
+
+      -- Update veh
+      local veh = cache.seat == -1 and cache.vehicle
+
+      if veh then
+        SetEntityCoords(veh, pos.x, pos.y, pos.z)
       end
+
+      SetEntityHeading(ped, rotZ)
     end
 
     local frameCounter = 0
     local loopPos, loopRotZ
     while IsFreecamActive() do
       loopPos, loopRotZ = UpdateCamera()
-      frameCounter = frameCounter + 1
+      frameCounter += 1
       if frameCounter > 100 then
         frameCounter = 0
         updatePos(loopPos, loopRotZ)

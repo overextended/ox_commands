@@ -6,15 +6,13 @@ local max = math.max
 local type = type
 
 function table.copy(x)
-  local copy = {}
+  x = table.clone(x)
   for k, v in pairs(x) do
     if type(v) == 'table' then
-      copy[k] = table.copy(v)
-    else
-      copy[k] = v
+      x[k] = table.copy(v)
     end
   end
-  return copy
+  return x
 end
 
 function protect(t)
@@ -39,13 +37,6 @@ end
 
 function Clamp(x, _min, _max)
   return min(max(x, _min), _max)
-end
-
-function ClampCameraRotation(rotX, rotY, rotZ)
-  local x = Clamp(rotX, -90.0, 90.0)
-  local y = rotY % 360
-  local z = rotZ % 360
-  return x, y, z
 end
 
 function IsGamepadControl()
@@ -74,25 +65,23 @@ function EulerToMatrix(rotX, rotY, rotZ)
   local cosY = cos(radY)
   local cosZ = cos(radZ)
 
-  local vecX = {}
-  local vecY = {}
-  local vecZ = {}
+  local vecX = vector3(
+    cosY * cosZ,
+    cosY * sinZ,
+    -sinY
+  )
 
-  vecX.x = cosY * cosZ
-  vecX.y = cosY * sinZ
-  vecX.z = -sinY
+  local vecY = vector3(
+    cosZ * sinX * sinY - cosX * sinZ,
+    cosX * cosZ - sinX * sinY * sinZ,
+    cosY * sinX
+  )
 
-  vecY.x = cosZ * sinX * sinY - cosX * sinZ
-  vecY.y = cosX * cosZ - sinX * sinY * sinZ
-  vecY.z = cosY * sinX
-
-  vecZ.x = -cosX * cosZ * sinY + sinX * sinZ
-  vecZ.y = -cosZ * sinX + cosX * sinY * sinZ
-  vecZ.z = cosX * cosY
-
-  vecX = vector3(vecX.x, vecX.y, vecX.z)
-  vecY = vector3(vecY.x, vecY.y, vecY.z)
-  vecZ = vector3(vecZ.x, vecZ.y, vecZ.z)
+  local vecZ = vector3(
+    -cosX * cosZ * sinY + sinX * sinZ,
+    -cosZ * sinX + cosX * sinY * sinZ,
+    cosX * cosY
+  )
 
   return vecX, vecY, vecZ
 end

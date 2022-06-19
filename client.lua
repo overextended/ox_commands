@@ -83,23 +83,6 @@ local noClip = false
 -- https://github.com/Deltanic/fivem-freecam/
 -- https://github.com/tabarra/txAdmin/tree/master/scripts/menu/vendor/freecam
 registerCommand('noclip', function()
-    local ped = cache.ped
-
-    SetEntityVisible(ped, noClip)
-    SetEntityCollision(ped, noClip, noClip)
-
     noClip = not noClip
-
     SetFreecamActive(noClip)
-    SetEntityInvincible(ped, noClip)
-
-    if noClip then
-        StartFreecamThread()
-
-        if cache.vehicle then
-            TaskLeaveVehicle(ped, cache.vehicle, 16)
-        end
-    else
-        SetGameplayCamRelativeHeading(0)
-    end
 end)
