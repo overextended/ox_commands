@@ -50,7 +50,7 @@ function GetFreecamPosition()
 end
 
 function SetFreecamPosition(pos)
-  local int = GetInteriorAtCoords(pos)
+  local int = GetInteriorAtCoords(pos.x, pos.y, pos.z)
 
   if int ~= 0 then
     PinInteriorInMemory(int)
@@ -104,7 +104,7 @@ end
 --------------------------------------------------------------------------------
 
 function IsFreecamActive()
-  return IsCamActive(_internal_camera) == 1
+  return IsCamActive(_internal_camera)
 end
 
 function SetFreecamActive(active)
