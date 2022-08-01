@@ -81,6 +81,27 @@ do
 	vehicleModType = arr
 end
 
+local GetLabelText = GetLabelText
+
+local function createModEntry(index, vehicle, modCount, getLabel)
+	local entries = table.create(modCount, 0)
+
+	for j = -1, modCount - 1 do
+		local label = getLabel(vehicle, index, j)
+		entries[j + 2] = label and GetLabelText(label) or 'Stock'
+	end
+
+	local modType = vehicleModType[index]
+
+	return { label = modType, description = ('Change the current %s'):format(modType), values = entries }
+end
+
+local SetVehicleModKit = SetVehicleModKit
+local GetNumVehicleMods = GetNumVehicleMods
+local GetVehicleLiveryCount = GetVehicleLiveryCount
+local GetLiveryName = GetLiveryName
+local GetModTextLabel = GetModTextLabel
+
 local function setupVehicleMods(vehicle)
 	if vehicle == lastVehicle then return menu end
 	SetVehicleModKit(vehicle, 0)
@@ -92,35 +113,17 @@ local function setupVehicleMods(vehicle)
 		local entry = i + 1
 		local modCount = GetNumVehicleMods(vehicle, i)
 
-		if modCount ~= 0 then
-			local entries = table.create(modCount, 0)
-
-			for j = -1, modCount - 1 do
-				local modText = GetModTextLabel(vehicle, i, j)
-				entries[j + 2] = modText and GetLabelText(modText) or 'Stock'
-			end
-
-			options[entry] = { label = vehicleModType[i], description = 'Change the current ' .. vehicleModType[i], values = entries }
-		elseif i == 48 then
+		if i == 48 and modCount == 0 then
 			modCount = GetVehicleLiveryCount(vehicle)
 
 			if modCount ~= 0 then
 				modLivery = false
-
-				if modCount ~= 0 then
-					local entries = table.create(modCount, 0)
-
-					for j = -1, modCount - 1 do
-						local liveryText = GetLiveryName(vehicle, i)
-						entries[j + 2] = liveryText and GetLabelText(liveryText) or 'Stock'
-					end
-				end
-
-				options[entry] = { label = vehicleModType[i], description = 'Change the current ' .. vehicleModType[i], values = entries }
 			end
 		end
 
-		if not options[entry] then
+		if modCount ~= 0 then
+			options[entry] = createModEntry(i, vehicle, modCount, (i == 48 and not modLivery) and GetLiveryName or GetModTextLabel)
+		else
 			options[entry] = {}
 		end
 	end
