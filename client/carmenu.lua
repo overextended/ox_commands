@@ -90,7 +90,8 @@ local function createModEntry(index, vehicle, modCount, getLabel)
 
 	for j = -1, modCount - 1 do
 		local label = getLabel(vehicle, index, j)
-		entries[j + 2] = label and GetLabelText(label) or 'Stock'
+		local j2 = j + 2
+		entries[j2] = label and GetLabelText(label) or (j == -1 and 'Stock') or j2
 	end
 
 	local modType = vehicleModType[index]
