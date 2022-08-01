@@ -3,19 +3,21 @@ local modLivery
 local menu = {
 	id = 'ox_commands:carMenu',
 	title = 'Vehicle Mods',
-	onChange = function(selected, scrollIndex)
-		print('onChange', selected, scrollIndex)
-
-		if scrollIndex then
-			if selected == 48 and not modLivery then
-				return SetVehicleLivery(lastVehicle, scrollIndex - 1)
-			end
-
-			SetVehicleMod(lastVehicle, selected, scrollIndex - 1)
-		end
-	end,
 	options = {}
 }
+
+function menu.onChange(selected, scrollIndex)
+	local modIndex = menu.options[selected + 1].modIndex
+	print('onChange', selected, scrollIndex, modIndex)
+
+	if scrollIndex then
+		if modIndex == 48 and not modLivery then
+			return SetVehicleLivery(lastVehicle, scrollIndex - 1)
+		end
+
+		SetVehicleMod(lastVehicle, modIndex, scrollIndex - 1)
+	end
+end
 
 -- https://docs.fivem.net/natives/?_0x6AF0636DDEDCB6DD
 local vehicleModType = {
@@ -93,7 +95,7 @@ local function createModEntry(index, vehicle, modCount, getLabel)
 
 	local modType = vehicleModType[index]
 
-	return { label = modType, description = ('Change the current %s'):format(modType), values = entries }
+	return { label = modType, description = ('Change the current %s'):format(modType), values = entries, modIndex = index }
 end
 
 local SetVehicleModKit = SetVehicleModKit
@@ -108,9 +110,9 @@ local function setupVehicleMods(vehicle)
 
 	modLivery = true
 	local options = {}
+	local count = 0
 
 	for i = 0, 49 do
-		local entry = i + 1
 		local modCount = GetNumVehicleMods(vehicle, i)
 
 		if i == 48 and modCount == 0 then
@@ -122,9 +124,8 @@ local function setupVehicleMods(vehicle)
 		end
 
 		if modCount ~= 0 then
-			options[entry] = createModEntry(i, vehicle, modCount, (i == 48 and not modLivery) and GetLiveryName or GetModTextLabel)
-		else
-			options[entry] = {}
+			count += 1
+			options[count] = createModEntry(i, vehicle, modCount, (i == 48 and not modLivery) and GetLiveryName or GetModTextLabel)
 		end
 	end
 
