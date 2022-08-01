@@ -21,9 +21,8 @@ client_scripts {
     'vendor/freecam/main.lua',
     'vendor/freecam/camera.lua',
 	'client/main.lua',
+    'client/carmenu.lua',
 }
-
-client_script 'client.lua'
 
 files {
 	'locales/*.json'
