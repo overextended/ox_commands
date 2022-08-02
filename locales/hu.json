@@ -1,0 +1,5 @@
+{
+    "no_permission": "Nincs jogod a parancsot használni",
+    "invalid_target": "A célpont nem létezik",
+    "success": "A parancs sikeresen végrehajtva"
+}
