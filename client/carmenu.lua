@@ -83,13 +83,15 @@ do
 	vehicleModType = arr
 end
 
+local GetLiveryName = GetLiveryName
+local GetModTextLabel = GetModTextLabel
 local GetLabelText = GetLabelText
 
-local function createModEntry(index, vehicle, modCount, getLabel)
+local function createModEntry(index, vehicle, modCount)
 	local entries = table.create(modCount, 0)
 
 	for j = -1, modCount - 1 do
-		local label = getLabel(vehicle, index, j)
+		local label = (index == 48 and not modLivery) and GetLiveryName(vehicle, j) or GetModTextLabel(vehicle, index, j)
 		local j2 = j + 2
 		entries[j2] = label and GetLabelText(label) or (j == -1 and 'Stock') or j2
 	end
@@ -102,8 +104,6 @@ end
 local SetVehicleModKit = SetVehicleModKit
 local GetNumVehicleMods = GetNumVehicleMods
 local GetVehicleLiveryCount = GetVehicleLiveryCount
-local GetLiveryName = GetLiveryName
-local GetModTextLabel = GetModTextLabel
 
 local function setupVehicleMods(vehicle)
 	if vehicle == lastVehicle then return menu end
@@ -126,7 +126,7 @@ local function setupVehicleMods(vehicle)
 
 		if modCount ~= 0 then
 			count += 1
-			options[count] = createModEntry(i, vehicle, modCount, (i == 48 and not modLivery) and GetLiveryName or GetModTextLabel)
+			options[count] = createModEntry(i, vehicle, modCount)
 		end
 	end
 
