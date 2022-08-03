@@ -124,7 +124,7 @@ local function setupVehicleMods(vehicle)
 			end
 		end
 
-		if modCount ~= 0 then
+		if modCount > 0 then
 			count += 1
 			options[count] = createModEntry(i, vehicle, modCount)
 		end
