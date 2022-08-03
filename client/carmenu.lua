@@ -7,15 +7,18 @@ local menu = {
 }
 
 function menu.onChange(selected, scrollIndex)
-	local modIndex = menu.options[selected + 1].modIndex
-	print('onChange', selected, scrollIndex, modIndex)
+	local option = menu.options[selected + 1]
 
-	if scrollIndex then
-		if modIndex == 48 and not modLivery then
+	if scrollIndex ~= option.defaultIndex then
+		print('onChange', selected, scrollIndex, option.modIndex)
+		option.defaultIndex = scrollIndex
+		lib.setMenuOptions(menu.id, option, selected + 1)
+
+		if option.modIndex == 48 and not modLivery then
 			return SetVehicleLivery(lastVehicle, scrollIndex - 1)
 		end
 
-		SetVehicleMod(lastVehicle, modIndex, scrollIndex - 1)
+		SetVehicleMod(lastVehicle, option.modIndex, scrollIndex - 1)
 	end
 end
 
@@ -98,7 +101,7 @@ local function createModEntry(index, vehicle, modCount)
 
 	local modType = vehicleModType[index]
 
-	return { label = modType, description = ('Change the current %s'):format(modType), values = entries, modIndex = index }
+	return { label = modType, description = ('Change the current %s'):format(modType), values = entries, modIndex = index, defaultIndex = GetVehicleMod(vehicle, index) + 1 }
 end
 
 local SetVehicleModKit = SetVehicleModKit
