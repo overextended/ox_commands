@@ -6,19 +6,19 @@ local menu = {
 	options = {}
 }
 
-function menu.onChange(selected, scrollIndex)
-	local option = menu.options[selected + 1]
+function menu.onSideScroll(selected, scrollIndex)
+	local option = menu.options[selected]
 
 	if scrollIndex ~= option.defaultIndex then
-		print('onChange', selected, scrollIndex, option.modIndex)
+		print('onSideScroll', selected, scrollIndex, option.modIndex)
 		option.defaultIndex = scrollIndex
-		lib.setMenuOptions(menu.id, option, selected + 1)
+		lib.setMenuOptions(menu.id, option, selected)
 
 		if option.modIndex == 48 and not modLivery then
-			return SetVehicleLivery(lastVehicle, scrollIndex - 1)
+			return SetVehicleLivery(lastVehicle, scrollIndex - 2)
 		end
 
-		SetVehicleMod(lastVehicle, option.modIndex, scrollIndex - 1)
+		SetVehicleMod(lastVehicle, option.modIndex, scrollIndex - 2)
 	end
 end
 
