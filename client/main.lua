@@ -3,13 +3,15 @@ lib.locale()
 local _registerCommand = RegisterCommand
 
 function RegisterCommand(commandName, callback)
-    _registerCommand(commandName, function(_, args)
-        if not lib.callback.await('ox_commands:hasPermission', 100, ('command.%s'):format(commandName)) then
-            return lib.notify({ type = 'error', description = locale('no_permission') })
-        end
+    _registerCommand(commandName, function(_, args, raw)
+        CreateThread(function()
+            if not lib.callback.await('ox_commands:hasPermission', 100, ('command.%s'):format(commandName)) then
+                return lib.notify({ type = 'error', description = locale('no_permission') })
+            end
 
-        callback(args)
-        lib.notify({ type = 'success', description = locale('success') })
+            callback(args, raw)
+            lib.notify({ type = 'success', description = locale('success') })
+        end)
     end)
 end
 
