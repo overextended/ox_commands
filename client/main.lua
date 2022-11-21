@@ -92,6 +92,28 @@ RegisterCommand('tpm', function()
     end
 end)
 
+RegisterCommand('setcoords', function(_, raw)
+    raw = raw:sub(raw:find('%(') + 1 or 11, -1):gsub('%)', ''):gsub(',', '')
+    local x, y, z, w = string.strsplit(' ', raw)
+
+    if x and y and z then
+        DoScreenFadeOut(100)
+        Wait(100)
+
+        local vehicle = cache.seat == -1 and cache.vehicle
+        lastCoords = GetEntityCoords(cache.ped)
+
+        teleport(vehicle, tonumber(x), tonumber(y), tonumber(z))
+
+        if w then
+            SetEntityHeading(cache.ped, tonumber(w) or 90)
+        end
+
+        SetGameplayCamRelativeHeading(0)
+        DoScreenFadeIn(750)
+    end
+end)
+
 local noClip = false
 
 -- https://github.com/Deltanic/fivem-freecam/
