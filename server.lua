@@ -1,7 +1,3 @@
-lib.callback.register('ox_commands:hasPermission', function(source, command)
-    return IsPlayerAceAllowed(source, command)
-end)
-
 lib.addCommand('group.admin', 'freeze', function(source, args)
     local entity = GetPlayerPed(args.target)
 
