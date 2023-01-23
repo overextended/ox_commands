@@ -118,6 +118,20 @@ RegisterCommand('setcoords', function(_, raw)
         DoScreenFadeIn(750)
     end
 end, true)
+
+RegisterCommand('coords', function(args)
+    local coords = GetEntityCoords(cache.ped)
+    local str = args[1] and 'vec4(%.3f, %.3f, %.3f, %.3f)' or 'vec3(%.3f, %.3f, %.3f)'
+    str = str:format(coords.x, coords.y, coords.z, args[1] and GetEntityHeading(cache.ped) or nil)
+
+    print(str)
+    lib.setClipboard(str)
+end, false)
+
+SetTimeout(1000, function()
+    TriggerEvent('chat:addSuggestion', '/coords', 'Saves current coordinates to the clipboard.', {
+        { name = 'heading', help = 'Save your current heading.' },
+    })
 end)
 
 local noClip = false
