@@ -2,30 +2,35 @@ lib.locale()
 
 local _registerCommand = RegisterCommand
 
-function RegisterCommand(commandName, callback)
-    _registerCommand(commandName, function(_, args, raw)
-        CreateThread(function()
-            if not lib.callback.await('ox_commands:hasPermission', 100, ('command.%s'):format(commandName)) then
-                return lib.notify({ type = 'error', description = locale('no_permission') })
-            end
-
-            callback(args, raw)
+---@param commandName string
+---@param callback fun(source, args, raw)
+---@param restricted boolean?
+function RegisterCommand(commandName, callback, restricted)
+	_registerCommand(commandName, function(_, args, raw)
+		if not restricted or lib.callback.await('ox_lib:checkPlayerAce', 100, ('command.%s'):format(commandName)) then
             lib.notify({ type = 'success', description = locale('success') })
-        end)
-    end)
+			return callback(args, raw)
+		end
+
+        lib.notify({ type = 'error', description = locale('no_permission') })
+	end)
 end
 
 local function freezePlayer(state, vehicle)
     local playerId, ped = cache.playerId, cache.ped
-    local entity = vehicle and cache.vehicle or ped
+    vehicle = vehicle and cache.vehicle
 
-    SetPlayerControl(playerId, not state, 1 << 8)
     SetPlayerInvincible(playerId, state)
-    FreezeEntityPosition(entity, state)
-    SetEntityCollision(entity, not state)
+    FreezeEntityPosition(ped, state)
+    SetEntityCollision(ped, not state)
 
-    if not state and vehicle then
-        SetVehicleOnGroundProperly(entity)
+    if vehicle then
+        if not state then
+            SetVehicleOnGroundProperly(vehicle)
+        end
+
+        FreezeEntityPosition(vehicle, state)
+        SetEntityCollision(vehicle, not state)
     end
 end
 
@@ -47,7 +52,7 @@ RegisterCommand('goback', function()
         teleport(cache.vehicle, lastCoords.x, lastCoords.y, lastCoords.z)
         lastCoords = currentCoords
     end
-end)
+end, true)
 
 RegisterCommand('tpm', function()
 	local marker = GetFirstBlipInfoId(8)
@@ -90,7 +95,7 @@ RegisterCommand('tpm', function()
         SetGameplayCamRelativeHeading(0)
         DoScreenFadeIn(750)
     end
-end)
+end, true)
 
 RegisterCommand('setcoords', function(_, raw)
     raw = raw:sub(raw:find('%(') + 1 or 11, -1):gsub('%)', ''):gsub(',', '')
@@ -112,6 +117,7 @@ RegisterCommand('setcoords', function(_, raw)
         SetGameplayCamRelativeHeading(0)
         DoScreenFadeIn(750)
     end
+end, true)
 end)
 
 local noClip = false
@@ -121,4 +127,4 @@ local noClip = false
 RegisterCommand('noclip', function()
     noClip = not noClip
     SetFreecamActive(noClip)
-end)
+end, true)
