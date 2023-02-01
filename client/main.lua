@@ -36,6 +36,29 @@ end
 
 RegisterNetEvent('ox_commands:freeze', freezePlayer)
 
+local function setAppearance()
+    local config = {
+        ped = true,
+        headBlend = true,
+        faceFeatures = true,
+        headOverlays = true,
+        components = true,
+        props = true,
+        allowExit = true,
+        tattoos = true
+      }
+    
+      exports['fivem-appearance']:startPlayerCustomization(function (appearance)
+        if (appearance) then
+          print('Saved')
+        else
+          print('Canceled')
+        end
+      end, config)
+end
+
+RegisterNetEvent('ox_commands:setappearance', setAppearance)
+
 local function teleport(vehicle, x, y, z)
     if vehicle then
         return SetPedCoordsKeepVehicle(cache.ped, x, y, z)
