@@ -48,13 +48,11 @@ local function setAppearance()
         tattoos = true
       }
     
-      exports['fivem-appearance']:startPlayerCustomization(function (appearance)
+      exports['fivem-appearance']:startPlayerCustomization(function(appearance)
         if (appearance) then
-          print('Saved')
-        else
-          print('Canceled')
+            exports.ox_appearance:SaveAppearance(appearance)
         end
-      end, config)
+    end, config)
 end
 
 RegisterNetEvent('ox_commands:setappearance', setAppearance)
