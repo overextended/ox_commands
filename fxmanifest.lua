@@ -16,6 +16,7 @@ shared_script '@ox_lib/init.lua'
 server_script 'server.lua'
 
 client_scripts {
+    'config.lua',
     'vendor/freecam/utils.lua',
     'vendor/freecam/config.lua',
     'vendor/freecam/main.lua',
