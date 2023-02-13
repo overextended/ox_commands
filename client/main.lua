@@ -72,7 +72,7 @@ RegisterCommand('tpm', function()
 
         while z < 800.0 do
             Wait(0)
-            local found, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, z, false)
+            local found, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, z, true)
 
             if int == 0 then
                 int = GetInteriorAtCoords(coords.x, coords.y, z)
