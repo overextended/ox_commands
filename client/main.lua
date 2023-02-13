@@ -7,12 +7,14 @@ local _registerCommand = RegisterCommand
 ---@param restricted boolean?
 function RegisterCommand(commandName, callback, restricted)
 	_registerCommand(commandName, function(_, args, raw)
-		if not restricted or lib.callback.await('ox_lib:checkPlayerAce', 100, ('command.%s'):format(commandName)) then
-            lib.notify({ type = 'success', description = locale('success') })
-			return callback(args, raw)
-		end
+        CreateThread(function()
+            if not restricted or lib.callback.await('ox_lib:checkPlayerAce', 100, ('command.%s'):format(commandName)) then
+                lib.notify({ type = 'success', description = locale('success') })
+                return callback(args, raw)
+            end
 
-        lib.notify({ type = 'error', description = locale('no_permission') })
+            lib.notify({ type = 'error', description = locale('no_permission') })
+        end)
 	end)
 end
 
