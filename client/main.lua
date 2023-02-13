@@ -99,21 +99,31 @@ RegisterCommand('tpm', function()
     end
 end, true)
 
-RegisterCommand('setcoords', function(_, raw)
-    raw = raw:sub(raw:find('%(') + 1 or 11, -1):gsub('%)', ''):gsub(',', '')
-    local x, y, z, w = string.strsplit(' ', raw)
+local function stringToCoords(input)
+    local arr, num = {}, 0
 
-    if x and y and z then
+    for n in string.gmatch(input:gsub('vec.-%d?%(', ''), '(-?[%d.%d]+)') do
+        num += 1
+        arr[num] = tonumber(n)
+    end
+
+    return table.unpack(arr)
+end
+
+RegisterCommand('setcoords', function(_, raw)
+    local x, y, z, w = stringToCoords(raw)
+
+    if x then
         DoScreenFadeOut(100)
         Wait(100)
 
         local vehicle = cache.seat == -1 and cache.vehicle
         lastCoords = GetEntityCoords(cache.ped)
 
-        teleport(vehicle, tonumber(x), tonumber(y), tonumber(z))
+        teleport(vehicle, x, y, z)
 
         if w then
-            SetEntityHeading(cache.ped, tonumber(w) or 90)
+            SetEntityHeading(cache.ped, w)
         end
 
         SetGameplayCamRelativeHeading(0)
