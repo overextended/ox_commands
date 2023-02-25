@@ -1,4 +1,14 @@
-lib.addCommand('group.admin', 'freeze', function(source, args)
+lib.addCommand('freeze', {
+    help = 'Freeze the player',
+    params = {
+        {
+            name = 'target',
+            type = 'playerId',
+            help = 'Target player\'s server id', 
+        },
+    },
+    restricted = 'group.admin'
+}, function(source, args, raw)
     local entity = GetPlayerPed(args.target)
 
     if entity ~= 0 then
@@ -7,9 +17,19 @@ lib.addCommand('group.admin', 'freeze', function(source, args)
     end
 
     lib.notify(source, { type = 'error', description = 'invalid_target' })
-end, {'target:number'})
+end)
 
-lib.addCommand('group.admin', 'thaw', function(source, args)
+lib.addCommand('thaw', {
+    help = 'Unfreeze the player',
+    params = {
+        {
+            name = 'target',
+            type = 'playerId',
+            help = 'Target player\'s server id', 
+        },
+    },
+    restricted = 'group.admin'
+}, function(source, args, raw)
     local entity = GetPlayerPed(args.target)
 
     if entity ~= 0 then
@@ -18,4 +38,4 @@ lib.addCommand('group.admin', 'thaw', function(source, args)
     end
 
     lib.notify(source, { type = 'error', description = 'invalid_target' })
-end, {'target:number'})
+end)
