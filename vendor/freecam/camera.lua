@@ -33,7 +33,7 @@ local function GetInitialCameraRotation()
     return _internal_rot
   end
 
-  local rot = GetGameplayCamRot()
+  local rot = GetGameplayCamRot(0)
   return vector3(rot.x, 0.0, rot.z)
 end
 
@@ -56,7 +56,7 @@ function SetFreecamPosition(pos)
     PinInteriorInMemory(int)
   end
 
-  SetFocusPosAndVel(pos.x, pos.y, pos.z)
+  SetFocusPosAndVel(pos.x, pos.y, pos.z, 0.0, 0.0, 0.0)
   LockMinimapPosition(pos.x, pos.y)
   SetCamCoord(_internal_camera, pos.x, pos.y, pos.z)
 
@@ -76,7 +76,7 @@ function SetFreecamRotation(rot)
     local vecX, vecY, vecZ = EulerToMatrix(rot.x, rot.y, rot.z)
 
     LockMinimapAngle(floor(rot.z))
-    SetCamRot(_internal_camera, rot.x, rot.y, rot.z)
+    SetCamRot(_internal_camera, rot.x, rot.y, rot.z, 2)
 
     _internal_rot  = rot
     _internal_vecX = vecX
@@ -114,7 +114,7 @@ function SetFreecamActive(active)
 
   local ped = cache.ped
 
-  SetEntityVisible(ped, not active)
+  SetEntityVisible(ped, not active, false)
   SetEntityCollision(ped, not active, not active)
   SetEntityInvincible(ped, active)
 
@@ -134,7 +134,7 @@ function SetFreecamActive(active)
     TriggerEvent('freecam:onEnter')
     StartFreecamThread()
   else
-    DestroyCam(_internal_camera)
+    DestroyCam(_internal_camera, false)
     ClearFocus()
     UnlockMinimapPosition()
     UnlockMinimapAngle()

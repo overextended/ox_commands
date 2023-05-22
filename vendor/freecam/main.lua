@@ -83,13 +83,13 @@ function StartFreecamThread()
 
     local function updatePos(pos, rotZ)
       -- Update ped
-      SetEntityCoords(ped, pos.x, pos.y, pos.z)
+      SetEntityCoords(ped, pos.x, pos.y, pos.z, true, false, false, false)
 
       -- Update veh
       local veh = cache.seat == -1 and cache.vehicle
 
       if veh then
-        SetEntityCoords(veh, pos.x, pos.y, pos.z)
+        SetEntityCoords(veh, pos.x, pos.y, pos.z, true, false, false, false)
       end
 
       SetEntityHeading(ped, rotZ)
@@ -135,32 +135,32 @@ function StartFreecamThread()
 
     BeginScaleformMovieMethod(scaleform, "SET_DATA_SLOT")
     ScaleformMovieMethodAddParamInt(0)
-    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_FAST, 1), "Faster")
+    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_FAST, true), "Faster")
     EndScaleformMovieMethod()
 
     BeginScaleformMovieMethod(scaleform, "SET_DATA_SLOT")
     ScaleformMovieMethodAddParamInt(1)
-    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_SLOW, 1), "Slower")
+    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_SLOW, true), "Slower")
     EndScaleformMovieMethod()
 
     BeginScaleformMovieMethod(scaleform, "SET_DATA_SLOT")
     ScaleformMovieMethodAddParamInt(2)
-    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_Y, 1), "Fwd/Back")
+    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_Y, true), "Fwd/Back")
     EndScaleformMovieMethod()
 
     BeginScaleformMovieMethod(scaleform, "SET_DATA_SLOT")
     ScaleformMovieMethodAddParamInt(3)
-    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_X, 1), "Left/Right")
+    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_X, true), "Left/Right")
     EndScaleformMovieMethod()
 
     BeginScaleformMovieMethod(scaleform, "SET_DATA_SLOT")
     ScaleformMovieMethodAddParamInt(4)
-    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_Z[2], 1), "Down")
+    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_Z[2], true), "Down")
     EndScaleformMovieMethod()
 
     BeginScaleformMovieMethod(scaleform, "SET_DATA_SLOT")
     ScaleformMovieMethodAddParamInt(5)
-    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_Z[1], 1), "Up")
+    InstructionalButton(GetControlInstructionalButton(0, CONTROLS.MOVE_Z[1], true), "Up")
     EndScaleformMovieMethod()
 
     BeginScaleformMovieMethod(scaleform, "DRAW_INSTRUCTIONAL_BUTTONS")
@@ -177,7 +177,8 @@ function StartFreecamThread()
       DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255, 0)
       Wait(0)
     end
-    SetScaleformMovieAsNoLongerNeeded()
+
+    SetScaleformMovieAsNoLongerNeeded(scaleform)
   end)
 end
 

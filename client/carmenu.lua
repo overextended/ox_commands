@@ -18,7 +18,7 @@ function menu.onSideScroll(selected, scrollIndex)
 			return SetVehicleLivery(lastVehicle, scrollIndex - 2)
 		end
 
-		SetVehicleMod(lastVehicle, option.modIndex, scrollIndex - 2)
+		SetVehicleMod(lastVehicle, option.modIndex, scrollIndex - 2, false)
 	end
 end
 

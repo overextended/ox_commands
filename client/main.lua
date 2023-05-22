@@ -24,7 +24,7 @@ local function freezePlayer(state, vehicle)
 
     SetPlayerInvincible(playerId, state)
     FreezeEntityPosition(ped, state)
-    SetEntityCollision(ped, not state)
+    SetEntityCollision(ped, not state, true)
 
     if vehicle then
         if not state then
@@ -32,7 +32,7 @@ local function freezePlayer(state, vehicle)
         end
 
         FreezeEntityPosition(vehicle, state)
-        SetEntityCollision(vehicle, not state)
+        SetEntityCollision(vehicle, not state, true)
     end
 end
 
