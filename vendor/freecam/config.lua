@@ -11,7 +11,7 @@ local INPUT_PARACHUTE_BRAKE_RIGHT = 153
 
 --------------------------------------------------------------------------------
 
-local BASE_CONTROL_MAPPING = protect({
+local BASE_CONTROL_MAPPING = {
   -- Rotation
   LOOK_X = INPUT_LOOK_LR,
   LOOK_Y = INPUT_LOOK_UD,
@@ -24,11 +24,11 @@ local BASE_CONTROL_MAPPING = protect({
   -- Multiplier
   MOVE_FAST = INPUT_SPRINT,
   MOVE_SLOW = INPUT_CHARACTER_WHEEL
-})
+}
 
 --------------------------------------------------------------------------------
 
-local BASE_CONTROL_SETTINGS = protect({
+local BASE_CONTROL_SETTINGS = {
   -- Rotation
   LOOK_SENSITIVITY_X = 5,
   LOOK_SENSITIVITY_Y = 5,
@@ -37,11 +37,11 @@ local BASE_CONTROL_SETTINGS = protect({
   BASE_MOVE_MULTIPLIER = 0.85,
   FAST_MOVE_MULTIPLIER = 6,
   SLOW_MOVE_MULTIPLIER = 6,
-})
+}
 
 --------------------------------------------------------------------------------
 
-local BASE_CAMERA_SETTINGS = protect({
+local BASE_CAMERA_SETTINGS = {
   --Camera
   FOV = 50.0,
 
@@ -52,7 +52,7 @@ local BASE_CAMERA_SETTINGS = protect({
   -- Keep position/rotation
   KEEP_POSITION = false,
   KEEP_ROTATION = false
-})
+}
 
 --------------------------------------------------------------------------------
 
@@ -67,9 +67,6 @@ _G.GAMEPAD_CONTROL_MAPPING.MOVE_Z[2] = INPUT_PARACHUTE_BRAKE_RIGHT
 _G.GAMEPAD_CONTROL_MAPPING.MOVE_FAST = INPUT_VEH_ACCELERATE
 _G.GAMEPAD_CONTROL_MAPPING.MOVE_SLOW = INPUT_VEH_BRAKE
 
-protect(_G.KEYBOARD_CONTROL_MAPPING)
-protect(_G.GAMEPAD_CONTROL_MAPPING)
-
 --------------------------------------------------------------------------------
 
 _G.KEYBOARD_CONTROL_SETTINGS = table.copy(BASE_CONTROL_SETTINGS)
@@ -79,13 +76,9 @@ _G.GAMEPAD_CONTROL_SETTINGS = table.copy(BASE_CONTROL_SETTINGS)
 _G.GAMEPAD_CONTROL_SETTINGS.LOOK_SENSITIVITY_X = 2
 _G.GAMEPAD_CONTROL_SETTINGS.LOOK_SENSITIVITY_Y = 2
 
-protect(_G.KEYBOARD_CONTROL_SETTINGS)
-protect(_G.GAMEPAD_CONTROL_SETTINGS)
-
 --------------------------------------------------------------------------------
 
 _G.CAMERA_SETTINGS = table.copy(BASE_CAMERA_SETTINGS)
-protect(_G.CAMERA_SETTINGS)
 
 --------------------------------------------------------------------------------
 
