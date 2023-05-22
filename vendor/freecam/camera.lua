@@ -3,10 +3,10 @@ local vector3 = vector3
 local SetCamRot = SetCamRot
 local IsCamActive = IsCamActive
 local SetCamCoord = SetCamCoord
-local PinInteriorInMemory = PinInteriorInMemory
+-- local PinInteriorInMemory = PinInteriorInMemory
 local SetFocusPosAndVel = SetFocusPosAndVel
 local LockMinimapAngle = LockMinimapAngle
-local GetInteriorAtCoords = GetInteriorAtCoords
+-- local GetInteriorAtCoords = GetInteriorAtCoords
 local LockMinimapPosition = LockMinimapPosition
 
 local _internal_camera = nil
@@ -50,11 +50,11 @@ function GetFreecamPosition()
 end
 
 function SetFreecamPosition(pos)
-  local int = GetInteriorAtCoords(pos.x, pos.y, pos.z)
+  -- local int = GetInteriorAtCoords(pos.x, pos.y, pos.z)
 
-  if int ~= 0 then
-    PinInteriorInMemory(int)
-  end
+  -- if int ~= 0 then
+  --   PinInteriorInMemory(int)
+  -- end
 
   SetFocusPosAndVel(pos.x, pos.y, pos.z, 0.0, 0.0, 0.0)
   LockMinimapPosition(pos.x, pos.y)
