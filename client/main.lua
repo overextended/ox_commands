@@ -70,31 +70,32 @@ RegisterCommand('tpm', function()
 
         freezePlayer(true, vehicle)
 
-        local z, inc, int = 0.0, Config.TeleportIncrement + 0.0, 0
+        local z = GetHeightmapBottomZForPosition(coords.x, coords.y)
+        local inc = Config.TeleportIncrement + 0.0
 
         while z < 800.0 do
-            Wait(0)
             local found, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, z, true)
+            local int = GetInteriorAtCoords(coords.x, coords.y, z)
 
-            if int == 0 then
-                int = GetInteriorAtCoords(coords.x, coords.y, z)
-
+            if found or int ~= 0 then
                 if int ~= 0 then
-                    inc = 2.0
+                    local _, _, z = GetInteriorPosition(int)
+                    groundZ = z
                 end
-            end
 
-            if found then
                 teleport(vehicle, coords.x, coords.y, groundZ)
                 break
             end
 
             teleport(vehicle, coords.x, coords.y, z)
+            Wait(0)
+
             z += inc
         end
 
-        freezePlayer(false, vehicle)
         SetGameplayCamRelativeHeading(0)
+        Wait(500)
+        freezePlayer(false, vehicle)
         DoScreenFadeIn(750)
     end
 end, true)
