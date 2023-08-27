@@ -1,0 +1,5 @@
+{
+  "no_permission": "Não autorizado a usar o comando",
+  "invalid_target": "O alvo não existe",
+  "success": "Comando executado com sucesso"
+}
