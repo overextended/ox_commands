@@ -9,7 +9,7 @@ name         'ox_commands'
 version      '0.0.0'
 license      'GPL-3.0-or-later'
 author       'overextended'
-repository   'https://github.com/overextended/ox_commands'
+repository   'https://github.com/communityox/ox_commands'
 
 --[[ Manifest ]]--
 shared_script '@ox_lib/init.lua'
